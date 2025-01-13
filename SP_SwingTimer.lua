@@ -3,7 +3,8 @@ local version = "4.1.1"
 
 local st_delay = 0.2 -- On Vmangos there is a 200ms delay between main hand and off hand auto attacks
 
-if GetRealmName() == "Nordanaar" or GetRealmName() == "Tel'Abim" then
+local isTurtle = GetRealmName() == "Nordanaar" or GetRealmName() == "Tel'Abim"
+if isTurtle then
 	st_delay = 0 -- TurtleWoW removed the delay between main hand and off hand auto attacks
 end
 
@@ -81,7 +82,6 @@ loc["enUS"] = {
 	combatSpells = {
 		HS = "Heroic Strike",
 		Cleave = "Cleave",
-		Slam = "Slam",
 		RS = "Raptor Strike",
 		Maul = "Maul",
 		HolyStrike = "Holy Strike" -- Turtle wow
@@ -96,12 +96,15 @@ loc["frFR"] = {
 	combatSpells = {
 		HS = "Frappe héroïque",
 		Cleave = "Enchainement",
-		Slam = "Heurtoir",
 		RS = "Attaque du raptor",
 		Maul = "Mutiler",
 		HolyStrike = "Frappe sacrée" -- Tortue wow
 	}
 }
+if not isTurtle then
+    loc["enUS"].combatSpells["Slam"] = "Slam"
+    loc["frFR"].combatSpells["Slam"] = "Heurtoir"
+end
 local L = loc[GetLocale()];
 if (L == nil) then 
 	L = loc['enUS']; 
