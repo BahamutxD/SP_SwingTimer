@@ -282,9 +282,6 @@ local function UpdateAppearance()
     SP_ST_rangetimer:SetShadowOffset(1, -1)
     if (SP_ST_GS["bg"] ~= 0) then SP_ST_FrameRange:SetBackdrop(default_bg3) else SP_ST_FrameRange:SetBackdrop(nil) end
 
-    -- Rest of the function remains the same...
-    -- [Previous content continues...]
-
     -- Handle icon visibility and positioning
     if (SP_ST_GS["icons"] ~= 0) then
         SP_ST_mainhand:SetTexture(GetInventoryItemTexture("player", GetInventorySlotInfo("MainHandSlot")));
@@ -474,29 +471,47 @@ local function TestShow()
     ResetTimer(false)
 end
 
-
 local function UpdateDisplay()
     local style = SP_ST_GS["style"]
     local show_oh = SP_ST_GS["show_oh"]
     local show_range = SP_ST_GS["show_range"]
+
+    -- Class-based colors (RGB values from WoW class colors)
+    local classColors = {
+        WARRIOR = {r = 0.78, g = 0.61, b = 0.43}, -- Warrior: Tan
+        PALADIN = {r = 0.96, g = 0.55, b = 0.73}, -- Paladin: Pink
+        HUNTER = {r = 0.67, g = 0.83, b = 0.45}, -- Hunter: Green
+        ROGUE = {r = 1.00, g = 0.96, b = 0.41}, -- Rogue: Yellow
+        PRIEST = {r = 1.00, g = 1.00, b = 1.00}, -- Priest: White
+        SHAMAN = {r = 0.00, g = 0.44, b = 0.87}, -- Shaman: Blue
+        MAGE = {r = 0.41, g = 0.80, b = 0.94}, -- Mage: Light Blue
+        WARLOCK = {r = 0.58, g = 0.51, b = 0.79}, -- Warlock: Purple
+        DRUID = {r = 1.00, g = 0.49, b = 0.04} -- Druid: Orange
+    }
+
+    -- Get player's class color or default to Paladin pink if class not found
+    local classColor = classColors[player_class] or {r = 0.96, g = 0.55, b = 0.73}
+    local outOfRangeColor = {r = classColor.r * 0.8, g = classColor.g * 0.8, b = classColor.b * 0.8} -- Darker shade for out of range
+
     if SP_ST_InRange() then
-        SP_ST_FrameTime:SetVertexColor(1.0, 0.49, 0.94); -- Paladin pink (main bar)
-        SP_ST_FrameTime2:SetVertexColor(1.0, 0.49, 0.94); -- Paladin pink (offhand)
-        SP_ST_Frame:SetBackdropColor(0, 0, 0, 0.8); -- Keep backdrop dark
-        SP_ST_FrameOFF:SetBackdropColor(0, 0, 0, 0.8);
+        SP_ST_FrameTime:SetVertexColor(classColor.r, classColor.g, classColor.b) -- Main hand bar
+        SP_ST_FrameTime2:SetVertexColor(classColor.r, classColor.g, classColor.b) -- Offhand bar
+        SP_ST_Frame:SetBackdropColor(0, 0, 0, 0.8) -- Keep backdrop dark
+        SP_ST_FrameOFF:SetBackdropColor(0, 0, 0, 0.8)
     else
-        SP_ST_FrameTime:SetVertexColor(0.8, 0.2, 0.6); -- Darker pink (out of range)
-        SP_ST_FrameTime2:SetVertexColor(0.8, 0.2, 0.6);
-        SP_ST_Frame:SetBackdropColor(0.8, 0.2, 0.6, 0.5); -- Slightly transparent
-        SP_ST_FrameOFF:SetBackdropColor(0.8, 0.2, 0.6, 0.5);
+        SP_ST_FrameTime:SetVertexColor(outOfRangeColor.r, outOfRangeColor.g, outOfRangeColor.b) -- Darker shade when out of range
+        SP_ST_FrameTime2:SetVertexColor(outOfRangeColor.r, outOfRangeColor.g, outOfRangeColor.b)
+        SP_ST_Frame:SetBackdropColor(outOfRangeColor.r, outOfRangeColor.g, outOfRangeColor.b, 0.5) -- Slightly transparent
+        SP_ST_FrameOFF:SetBackdropColor(outOfRangeColor.r, outOfRangeColor.g, outOfRangeColor.b, 0.5)
     end
     if CheckInteractDistance("target",4) then
-        SP_ST_FrameTime3:SetVertexColor(1.0, 0.49, 0.94); -- Paladin pink (ranged)
-        SP_ST_FrameRange:SetBackdropColor(0, 0, 0, 0.8);
+        SP_ST_FrameTime3:SetVertexColor(classColor.r, classColor.g, classColor.b) -- Ranged bar
+        SP_ST_FrameRange:SetBackdropColor(0, 0, 0, 0.8)
     else
-        SP_ST_FrameTime3:SetVertexColor(0.8, 0.2, 0.6); -- Darker pink (out of range)
-        SP_ST_FrameRange:SetBackdropColor(0.8, 0.2, 0.6, 0.5);
+        SP_ST_FrameTime3:SetVertexColor(outOfRangeColor.r, outOfRangeColor.g, outOfRangeColor.b) -- Darker shade when out of range
+        SP_ST_FrameRange:SetBackdropColor(outOfRangeColor.r, outOfRangeColor.g, outOfRangeColor.b, 0.5)
     end
+
     -- Rest of the function remains the same...
     -- most classes won't want ranged indicator to stay up all the time
     if GetTime() - 10 > range_fader then
@@ -808,7 +823,7 @@ function SP_ST_OnEvent()
         CheckFlurry()
     elseif (event == "CHARACTER_POINTS_CHANGED") then
         GetFlurry(player_class)
-    elseif (evet == "ACTIONBAR_SLOT_CHANGED") then
+    elseif (event == "ACTIONBAR_SLOT_CHANGED") then
         SP_ST_Check_Actions(arg1)
     elseif (event == "UNIT_CASTEVENT" and arg1 == player_guid) then
         local spell = SpellInfo(arg4)
