@@ -1138,9 +1138,9 @@ function SP_ST_OnLoad()
     this:RegisterEvent("PLAYER_ENTERING_WORLD")
     this:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
     
-    SP_ST_Frame:SetScript("OnUpdate", SP_ST_OnUpdate)
-    SP_ST_FrameOFF:SetScript("OnUpdate", SP_ST_OnUpdate)
-    SP_ST_FrameRange:SetScript("OnUpdate", SP_ST_OnUpdate)
+    --SP_ST_Frame:SetScript("OnUpdate", SP_ST_OnUpdate)
+    --SP_ST_FrameOFF:SetScript("OnUpdate", SP_ST_OnUpdate)
+    --SP_ST_FrameRange:SetScript("OnUpdate", SP_ST_OnUpdate)
 end
 
 function SP_ST_OnEvent()
