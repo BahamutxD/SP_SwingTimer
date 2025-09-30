@@ -7,5 +7,6 @@
 ## OptionalDeps:
 ## SavedVariablesPerCharacter: SP_ST_GS
 ## SavedVariables: 
-SP_SwingTimer.xml
 SP_SwingTimer.lua
+SP_SwingTimer.xml
+
