@@ -161,7 +161,7 @@ function MakeMovable(frame)
 end
 --------------------------------------------------------------------------------
 local function print(msg)
-    DEFAULT_CHAT_FRAME:AddMessage(msg, 1, 1, 0.5)
+    --DEFAULT_CHAT_FRAME:AddMessage(msg, 1, 1, 0.5)
 end
 local function SplitString(s,t)
     local l = {n=0}
@@ -386,6 +386,27 @@ local function UpdateAppearance()
     SP_ST_FrameOFF:SetScale(SP_ST_GS["s"])
     SP_ST_FrameRange:SetAlpha(SP_ST_GS["a"])
     SP_ST_FrameRange:SetScale(SP_ST_GS["s"])
+    
+    -- Make frames click-through when not in move mode
+    if SP_ST_GS["move"] == "off" then
+        SP_ST_Frame:EnableMouse(false)
+        SP_ST_FrameOFF:EnableMouse(false)
+        SP_ST_FrameRange:EnableMouse(false)
+        -- Remove these lines since these elements don't exist as global variables
+        -- SP_ST_maintimer:EnableMouse(false)
+        -- SP_ST_offtimer:EnableMouse(false)
+        -- SP_ST_rangetimer:EnableMouse(false)
+        -- SP_ST_mainhand:EnableMouse(false)
+        -- SP_ST_offhand:EnableMouse(false)
+        -- SP_ST_range:EnableMouse(false)
+        -- SP_ST_FrameTime:EnableMouse(false)
+        -- SP_ST_FrameTime2:EnableMouse(false)
+        -- SP_ST_FrameTime3:EnableMouse(false)
+    else
+        SP_ST_Frame:EnableMouse(true)
+        SP_ST_FrameOFF:EnableMouse(true)
+        SP_ST_FrameRange:EnableMouse(true)
+    end
 end
 
 local function GetWeaponSpeed(off,ranged)
@@ -1048,6 +1069,7 @@ local function CreateMinimapButton()
     minimapButton:SetWidth(33)
     minimapButton:SetHeight(33)
     minimapButton:SetFrameLevel(8)
+	minimapButton:SetMovable(true)
     minimapButton:EnableMouse(true)
     minimapButton:RegisterForDrag("LeftButton")
 
